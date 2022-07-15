@@ -1,15 +1,19 @@
+# Sistema de Gerenciamento de Estacionamentos - PMS 
+---
+<br />
 <p align="center"> <img src="pms/images/logo.svg" width="600"></p>
-  
+<br />
+
 ---
 <br />
 
-> ## 📌 Visão Geral  
+> ### 📌 **Visão Geral**  
 O PMS é ums sistema simples e completo de **gerenciamento de estacionamentos particulares e instalações públicas**.
 
 O principal objetivo é informatizar o controle de liberação das catracas eletrônicas e o gerenciamento de diversas formas de acesso aos estacionamentos.  
 <br /><br />
 
-### 📋 Principais Funcionalidades
+### 📋 **Principais Funcionalidades**
   
 * Cadastrar os acessos(entrada/saída) dos veículos no estacionamento;
 * Controle financeiro de clientes avulsos, mensalistas e por evento;
