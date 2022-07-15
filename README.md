@@ -1,4 +1,4 @@
-<p align="center"> <img src="pms/images/logo1.svg" width="600"></p>
+<p align="center"> <img src="pms/images/logo.svg" width="600"></p>
   
 ---
 <br />
