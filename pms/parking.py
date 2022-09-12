@@ -308,6 +308,7 @@ class Estacionamento:
         self.__registro_eventos.append(placa)
 
     # =================================================================================
+
     def registrar_entrada_veiculo(
         self,
         placa: str,
