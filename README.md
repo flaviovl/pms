@@ -1,56 +1,108 @@
-# Sistema de Gerenciamento de Estacionamentos - PMS 
+# Sistema de Gerenciamento de Estacionamentos - PMS
 ---
 <br />
-<p align="center"> <img src="pms/images/logo.svg" width="600"></p>
+<p align="center"> <img src="images/logo.svg" width="600"></p>
 <br />
 
 ---
 <br />
 
-> ### 📌 **Visão Geral**  
+> ### 📌 **Visão Geral - Trabalho Prático TDD - TTPE**
 O PMS é ums sistema simples e completo de **gerenciamento de estacionamentos particulares e instalações públicas**.
 
-O principal objetivo é informatizar o controle de liberação das catracas eletrônicas e o gerenciamento de diversas formas de acesso aos estacionamentos.  
+O principal objetivo é informatizar o controle de liberação das catracas eletrônicas e o gerenciamento de diversas formas de acesso aos estacionamentos.
+<br /><br />
+
+|Nome|Matrícula|
+|---|---|
+|Flavio Vieira Leão | 15/0125682|
 <br /><br />
 
 ### 📋 **Principais Funcionalidades**
-  
+
 * Cadastrar os acessos(entrada/saída) dos veículos no estacionamento;
 * Controle financeiro de clientes avulsos, mensalistas e por evento;
 * Calculo do valor por tipo de acesso (frações, hora cheia, diária e mensalista);
 * Calcular os valores a serem repassados pela gerenciadora de estacionamentos ao contratante.
-* Emitir relatórios de mensalistas;  
-  <br />  
+* Emitir relatórios de mensalistas;
+<br /><br />
 
-### 🔧 **Guia de Instalação**
+
+### 🔧 **Como Rodar o Projeto**
+* Clone esse repositório.
+* Crie um virtualenv com Python 3.
+* Ative o virtualenv.
+* Instale as dependências.
+* Execute os testes
 ```
-....
+git clone https://github.com/flaviovl/pms
+cd pms
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
 ```
-  <br />  
+<br /><br />
 
 ### ⚙️ **Executando os testes**
+* Rodar suite testes completa:
 ```
-....
+pytest -svv
 ```
-  <br />  
+* **Rodar grupo de teste de entrada de dados:**
+```
+pytest -svv entrada_dados
+```
+* **Rodar grupo de testes de exceção:**
+```
+pytest -svv excecao
+```
+* **Rodar grupo de testes de funcionais:**
+```
+pytest -svv funcional
+```
+* **Rodar grupo de testes de registros de entrada e saida de veiculos:**
+```
+pytest -svv registro_entrada_saida
+```
+* **Outros grupos de testes:**
+```
+pytest -svv estacionamento
+pytest -svv valor_acesso
+pytest -svv apurado
+```
+<br /><br />
 
-### 🔩 Analise os testes de ponta a ponta
-```
-....
-```
-  <br />  
+### 🔩 Imagens dos principais testes
 
-### ⌨️ E testes de estilo de codificação
-```
-....
-```
-  <br />  
+---
+* Grupo de testes funcionais:
+<br />
+<p align="center"> <img src="images/test_marked_funcional.png" width="400"></p>
+<br />
+
+---
+* Grupo de testes exceção:
+<br />
+<p align="center"> <img src="images/test_marked_excecao.png" width="400"></p>
+<br />
+
+---
+* Grupo de testes de valor de acesso:
+<br />
+<p align="center"> <img src="images/test_marked_valor_acesso.png" width="400"></p>
+<br />
+
+---
+* Grupo de testes registro de entrada e saída de veículos:
+<br />
+<p align="center"> <img src="images/test_marked_registro.png" width="400"></p>
+<br /><br />
 
 ### 🛠️ Construído com
-```
-....
-```
-  <br />  
+
+* **Python 3.10.2**
+<br /><br />
 
 ## 📄 Licença
 
