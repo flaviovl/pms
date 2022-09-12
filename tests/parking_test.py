@@ -53,3 +53,62 @@ def test_valor_hora_cheia(valid_park):
     do valor de 4 x valor de fracao(15min).
     """
     assert valid_park.valor_hora_cheia == 30
+
+
+# ==============================================================================
+
+
+@pytest.mark.funcional
+@pytest.mark.registro_entrada_saida
+def test_registrar_entrada_um_veiculo(park):
+    placa = "LUV1530"
+    vagas_ocupadas_inicio = park.get_vagas_ocupadas
+    park.registrar_entrada_veiculo(placa, datetime(2022, 9, 3, 12, 0))
+    vagas_ocupadas_fim = park.get_vagas_ocupadas
+
+    assert vagas_ocupadas_fim == vagas_ocupadas_inicio + 1
+    assert placa in park.registro_entrada_ativo
+
+
+# ==============================================================================
+@pytest.mark.funcional
+@pytest.mark.registro_entrada_saida
+def test_registrar_saida_um_veiculo(park):
+    placa = "LUV1530"
+    vagas_ocupadas_inicio = park.get_vagas_ocupadas
+
+    park.registrar_entrada_veiculo(placa, datetime(2022, 9, 3, 12, 0))
+    park.registrar_saida_veiculo(placa, datetime(2022, 9, 3, 18, 0))
+    vagas_ocupadas_fim = park.get_vagas_ocupadas
+
+    assert vagas_ocupadas_inicio == vagas_ocupadas_fim
+    assert placa not in park.registro_entrada_ativo
+    assert placa in park.registro_saida
+
+
+# ==============================================================================
+
+placa = [
+    "HPR1040",
+    "JEE1240",
+    "LUV1530",
+]
+
+
+@pytest.mark.funcional
+@pytest.mark.registro_entrada_saida
+@pytest.mark.parametrize("placa", placa)
+def test_registrar_veiculo_mensalista(park, placa):
+    park.registrar_veiculos_mensalista(placa)
+    assert placa in park.registro_mensalista
+
+
+@pytest.mark.funcional
+@pytest.mark.registro_entrada_saida
+@pytest.mark.parametrize("placa", placa)
+def test_registrar_veiculo_evento(park, placa):
+    park.registrar_evento(placa)
+    assert placa in park.registro_evento
+
+
+# ==============================================================================

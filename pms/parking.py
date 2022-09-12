@@ -1,6 +1,5 @@
 import re
 from datetime import date, datetime, time
-from enum import Enum
 from numbers import Number
 
 from .exceptions import (
@@ -12,10 +11,6 @@ from .exceptions import (
     VeiculoExisteRegistroException,
     VeiculoNaoRegistrado,
 )
-
-
-class ParkingTicketStatus(Enum):
-    ROTATIVO, MENSALISTA, EVENTO, DIARIA = 1, 2, 3, 4
 
 
 class Estacionamento:
@@ -159,7 +154,157 @@ class Estacionamento:
         self._desconto_diaria_notura = valor
 
     # ===============================================================================
+    # Getters computed methods
 
     @property
     def valor_hora_cheia(self) -> float:
-        return 30
+        """
+        Metodo responsavel em calcular o valor cobrado por hora.
+        Valor da Hora é um percentual de quatro vezes o valor da
+        fração de 15min.
+
+        Returns:
+            float: valor da hora
+        """
+        return (self.__valor_fracao * 4) * self.__desconto_hora_cheia
+
+    @property
+    def get_vagas_livres(self) -> int:
+        """
+        Metodo responsavel em calcular o numero de vagas livres.
+
+        Returns:
+            int: numero de vagas livres
+        """
+        return self.__capacidade_maxima - self.__contador_veiculos
+
+    @property
+    def get_vagas_ocupadas(self) -> int:
+        """
+        Metodo responsavel retornar vagas ocupadas
+
+        Returns:
+            int: numero de vagas ocupadas
+        """
+        return self.__contador_veiculos
+
+    @property
+    def registro_entrada_ativo(self) -> dict:
+        """
+        Metodo responsavel retornar veiculos ativos no
+        registro do estacionamento
+
+        Returns:
+            dict: veiculos ativos
+        """
+        return self.__registro_entrada_ativo
+
+    @property
+    def registro_saida(self) -> dict:
+        """
+        Metodo responsavel retornar registro de veiculos n
+        o controle saisa
+
+        Returns:
+            dict: veiculos ativos
+        """
+        return self.__registro_saida
+
+    @property
+    def registro_mensalista(self) -> list:
+        """
+        Metodo responsavel retornar lista dos veiculos
+        cadastrados como mensalista.
+
+        Returns:
+            list: veiculos mensalista
+        """
+        return self.__registro_mensalistas
+
+    @property
+    def registro_evento(self) -> list:
+        """
+        Metodo responsavel retornar lista dos veiculos
+        cadastrados em um evento.
+
+        Returns:
+            list: veiculos cadastrados em evento
+        """
+        return self.__registro_eventos
+
+    @property
+    def get_esta_cheio(self) -> bool:
+        return self.__contador_veiculos >= self.__capacidade_maxima
+
+    # =================================================================================
+
+    def registrar_veiculos_mensalista(self, placa: str):
+        self.__registro_mensalistas.append(placa)
+
+    def registrar_evento(self, placa: str):
+        self.__registro_eventos.append(placa)
+
+    def registrar_entrada_veiculo(
+        self,
+        placa: str,
+        data_hora_entrada: datetime,
+        desc_seguradora: bool = False,
+    ):
+        if self.get_esta_cheio:
+            raise EstacionamentoCheioException("Estacionamento com lotação máxima")
+
+        if not placa:
+            raise DescricaoEmBrancoException("Placa é um campos obrigatorio")
+
+        if not data_hora_entrada:
+            raise DescricaoEmBrancoException("Data hora é um campos obrigatorio")
+
+        # Placa Válida padrão Mercosul = 'AAA0A00'
+        if not (re.match("[A-Z]{3}[0-9][0-9A-Z][0-9]{2}", placa)):
+            raise ValorAcessoInvalidoException("Placa invalida")
+
+        if not isinstance(data_hora_entrada, datetime):
+            raise DataHoraInvalidaException("Formato data/hora inválido")
+
+        self.__contador_veiculos += 1
+        self.__registro_entrada_ativo[placa] = {
+            "dt_entrada": data_hora_entrada,
+            "desc_seguradora": desc_seguradora,
+        }
+
+    def registrar_saida_veiculo(self, placa, data_hora_saida):
+
+        if self.__contador_veiculos <= 0:
+            raise EstacionamentoVazioException("Estacionamento vazio")
+
+        if not placa:
+            raise DescricaoEmBrancoException("Placa é um campos obrigatorio")
+
+        if not data_hora_saida:
+            raise DescricaoEmBrancoException("Data hora é um campos obrigatorio")
+
+        if not (re.match("[A-Z]{3}[0-9][0-9A-Z][0-9]{2}", placa)):
+            raise ValorAcessoInvalidoException("Placa invalida")
+
+        if not isinstance(data_hora_saida, datetime):
+            raise DataHoraInvalidaException("Formato data/hora inválido")
+
+        if placa not in self.__registro_entrada_ativo:
+            raise VeiculoNaoRegistrado("A entrada do veiculo nao foi registrada")
+
+        veiculo = self.__registro_entrada_ativo[placa]
+        data_hora_entrada = veiculo["dt_entrada"]
+        duracao_sec = (data_hora_saida - data_hora_entrada).seconds
+
+        if duracao_sec <= 0:
+            raise DataHoraInvalidaException("Data Hora saída menor ou igual a entrada")
+
+        self.__contador_veiculos -= 1
+        self.__registro_entrada_ativo.pop(placa)
+        self.__registro_saida[placa] = {
+            "entrada": data_hora_entrada,
+            "saida": data_hora_saida,
+            "duracao": duracao_sec,
+        }
+
+        return self.__registro_saida[placa]
