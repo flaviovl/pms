@@ -2,11 +2,15 @@ import re
 from datetime import date, datetime, time
 from numbers import Number
 
-from .exceptions import (DataHoraInvalidaException, DescricaoEmBrancoException,
-                         EstacionamentoCheioException,
-                         EstacionamentoVazioException,
-                         ValorAcessoInvalidoException,
-                         VeiculoExisteRegistroException, VeiculoNaoRegistrado)
+from .exceptions import (
+    DataHoraInvalidaException,
+    DescricaoEmBrancoException,
+    EstacionamentoCheioException,
+    EstacionamentoVazioException,
+    ValorAcessoInvalidoException,
+    VeiculoExisteRegistroException,
+    VeiculoNaoRegistrado,
+)
 
 
 class Estacionamento:
@@ -285,20 +289,7 @@ class Estacionamento:
         if self.__contador_veiculos <= 0:
             raise EstacionamentoVazioException("Estacionamento vazio")
 
-        if not placa:
-            raise DescricaoEmBrancoException("Placa é um campos obrigatorio")
-
-        if not data_hora_saida:
-            raise DescricaoEmBrancoException("Data hora é um campos obrigatorio")
-
-        if not (re.match("[A-Z]{3}[0-9][0-9A-Z][0-9]{2}", placa)):
-            raise ValorAcessoInvalidoException("Placa invalida")
-
-        if not isinstance(data_hora_saida, datetime):
-            raise DataHoraInvalidaException("Formato data/hora inválido")
-
-        if placa not in self.__registro_entrada_ativo:
-            raise VeiculoNaoRegistrado("A entrada do veiculo nao foi registrada")
+        self.dados_resistro_saida_veiculo_valido(placa, data_hora_saida)
 
         veiculo = self.__registro_entrada_ativo[placa]
         data_hora_entrada = veiculo["dt_entrada"]
@@ -309,6 +300,10 @@ class Estacionamento:
 
         if placa in self.__registro_mensalistas:
             custo = 0.0
+
+        # def buscar_placa_mensalista(self, placa):
+        #     if placa in self.__registro_mensalistas:
+        #         return True
 
         elif placa in self.__registro_eventos:
             custo = self.__valor_evento
@@ -381,6 +376,23 @@ class Estacionamento:
             sum(registro.get("custo") for _, registro in self.__registro_saida.items())
             + mensalistas
         )
+
+    # =================================================================================
+    def dados_resistro_saida_veiculo_valido(self, placa, data_hora_saida):
+        if not placa:
+            raise DescricaoEmBrancoException("Placa é um campos obrigatorio")
+
+        if not data_hora_saida:
+            raise DescricaoEmBrancoException("Data hora é um campos obrigatorio")
+
+        if not (re.match("[A-Z]{3}[0-9][0-9A-Z][0-9]{2}", placa)):
+            raise ValorAcessoInvalidoException("Placa invalida")
+
+        if not isinstance(data_hora_saida, datetime):
+            raise DataHoraInvalidaException("Formato data/hora inválido")
+
+        if placa not in self.__registro_entrada_ativo:
+            raise VeiculoNaoRegistrado("A entrada do veiculo nao foi registrada")
 
 
 # =================================================================================
