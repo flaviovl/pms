@@ -43,6 +43,32 @@ class Estacionamento:
         self.__fechamento: time = time(23, 59, 59)
 
     #  ===============================================================================
+    @classmethod
+    def alterar_desconto_seguradora(cls, percentual: float) -> None:
+        """
+        Metodo responsavel em alterar o percentual do desconto da parcecia
+        com seguradoras. Valor padrão é 10% de desconto;
+
+        Obs: Valor do percentual é o mesmo para todos os contratantes.
+        Desconto da Seguradora é padrão para todos os estacionamentos
+        """
+        if not isinstance(percentual, Number):
+            raise TypeError("Não é um numero")
+        cls.__desconto_seguradora = percentual
+
+    @classmethod
+    def alterar_percentual_contratante(cls, percentual: float) -> None:
+        """
+        Metodo responsavel em alterar o percentual do contratante.
+        Valor padrão do contratante = 50%;
+
+        Obs: Valor do percentual é o mesmo para todos os contratantes.
+        """
+        if not isinstance(percentual, Number):
+            raise TypeError("Não é um numero")
+        cls.__percetual_contratante = percentual
+
+    #  ===============================================================================
     # Getters and Setter (property)
 
     @property
