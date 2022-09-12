@@ -1,7 +1,21 @@
 import re
-from datetime import date, datetime, time
+from datetime import datetime, time
 from numbers import Number
 
+from .constants import (
+    DESCONTO_10_POR_CENTO,
+    DESCONTO_50_POR_CENTO,
+    FRACAO,
+    HORA,
+    HORA_EM_FRACAO,
+    HORA_ENTRADA_DIARIA_NOTURNA,
+    HORA_SAIDA_DIARIA_NOTURNA,
+    HORARIO_ABERTURA,
+    HORARIO_FECHAMENTO,
+    HORAS_DIARIA_DIURA_EM_FRACAO,
+    PLACA_PADRAO_MERCOSUL,
+    ZERO,
+)
 from .exceptions import (
     DataHoraInvalidaException,
     DescricaoEmBrancoException,
@@ -14,8 +28,8 @@ from .exceptions import (
 
 
 class Estacionamento:
-    __desconto_seguradora: float = 0.90
-    __percetual_contratante: float = 0.50
+    __desconto_seguradora: float = DESCONTO_10_POR_CENTO
+    __percetual_contratante: float = DESCONTO_50_POR_CENTO
 
     def __init__(
         self,
@@ -39,9 +53,8 @@ class Estacionamento:
         self.__registro_saida: dict = {}
         self.__registro_eventos: list = []
         self.__registro_mensalistas: list = []
-        self.__horario_abertura: time = time(8, 0)
-        self.__fechamento: time = time(23, 59, 59)
-        self.__bilhetes_ativos = {}
+        self.__horario_abertura: time = HORARIO_ABERTURA
+        self.__fechamento: time = HORARIO_FECHAMENTO
 
     #  ===============================================================================
     @classmethod
@@ -327,7 +340,7 @@ class Estacionamento:
             raise DescricaoEmBrancoException("Data hora é um campos obrigatorio")
 
         # Placa Válida padrão Mercosul = 'AAA0A00'
-        if not (re.match("[A-Z]{3}[0-9][0-9A-Z][0-9]{2}", placa)):
+        if not (re.match(PLACA_PADRAO_MERCOSUL, placa)):
             raise ValorAcessoInvalidoException("Placa invalida")
 
         if not isinstance(data_hora_entrada, datetime):
@@ -374,7 +387,7 @@ class Estacionamento:
         if not data_hora_saida:
             raise DescricaoEmBrancoException("Data hora é um campos obrigatorio")
 
-        if not (re.match("[A-Z]{3}[0-9][0-9A-Z][0-9]{2}", placa)):
+        if not (re.match(PLACA_PADRAO_MERCOSUL, placa)):
             raise ValorAcessoInvalidoException("Placa invalida")
 
         if not isinstance(data_hora_saida, datetime):
@@ -389,7 +402,7 @@ class Estacionamento:
     ):
         duracao_sec = (data_hora_saida - data_hora_entrada).seconds
 
-        return duracao_sec / 60
+        return duracao_sec / HORA
 
     # ------------------------------------------------------------------------------------
     def computar_custo(self, veiculo: dict, data_hora_saida: datetime):
@@ -414,7 +427,7 @@ class Estacionamento:
             raise DataHoraInvalidaException("Data Hora saída menor ou igual a entrada")
 
         if tipo_acesso == "MENSALISTA":
-            custo = 0.00
+            custo = ZERO
 
         elif tipo_acesso == "EVENTO":
             custo = self.__valor_evento
@@ -443,21 +456,21 @@ class Estacionamento:
         """
         if (
             data_hora_saida.day == data_hora_entrada.day + 1
-            and data_hora_entrada.hour >= 21
-            and data_hora_saida.hour < 8
+            and data_hora_entrada.hour >= HORA_ENTRADA_DIARIA_NOTURNA
+            and data_hora_saida.hour < HORA_SAIDA_DIARIA_NOTURNA
         ):
             return self.valor_diaria_noturna
 
         duracao_min = self.calcular_duracao_min(data_hora_entrada, data_hora_saida)
-        fracao_15min = round(duracao_min / 15)
+        fracao_15min = round(duracao_min / FRACAO)
 
-        if fracao_15min < 4:
+        if fracao_15min < HORA_EM_FRACAO:
             return fracao_15min * self.__valor_fracao  # type: ignore
 
-        if fracao_15min >= 36:
+        if fracao_15min >= HORAS_DIARIA_DIURA_EM_FRACAO:
             return self.__valor_diaria_diurna
 
-        duracao_hora = fracao_15min / 4
+        duracao_hora = fracao_15min / HORA_EM_FRACAO
         return duracao_hora * self.valor_hora_cheia
 
     # =================================================================================
