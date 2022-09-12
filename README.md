@@ -16,6 +16,7 @@ O principal objetivo é informatizar o controle de liberação das catracas elet
 |Nome|Matrícula|
 |---|---|
 |Flavio Vieira Leão | 15/0125682|
+
 <br /><br />
 
 ### 📋 **Principais Funcionalidades**
@@ -40,9 +41,8 @@ cd pms
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-
 ```
-<br /><br />
+<br />
 
 ### ⚙️ **Executando os testes**
 * Rodar suite testes completa:
@@ -71,33 +71,27 @@ pytest -svv estacionamento
 pytest -svv valor_acesso
 pytest -svv apurado
 ```
-<br /><br />
+<br />
 
 ### 🔩 Imagens dos principais testes
 
 ---
 * Grupo de testes funcionais:
 <br />
-<p align="center"> <img src="images/test_marked_funcional.png" width="400"></p>
+<p align="center"> <img src="images/test_marked_funcional.png" width="700"></p>
 <br />
 
 ---
 * Grupo de testes exceção:
 <br />
-<p align="center"> <img src="images/test_marked_excecao.png" width="400"></p>
+<p align="center"> <img src="images/test_marked_excecao.png" width="700"></p>
 <br />
 
 ---
 * Grupo de testes de valor de acesso:
 <br />
-<p align="center"> <img src="images/test_marked_valor_acesso.png" width="400"></p>
+<p align="center"> <img src="images/test_marked_valor_acesso.png" width="700"></p>
 <br />
-
----
-* Grupo de testes registro de entrada e saída de veículos:
-<br />
-<p align="center"> <img src="images/test_marked_registro.png" width="400"></p>
-<br /><br />
 
 ### 🛠️ Construído com
 
