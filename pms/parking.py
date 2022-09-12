@@ -299,12 +299,48 @@ class Estacionamento:
         if duracao_sec <= 0:
             raise DataHoraInvalidaException("Data Hora saída menor ou igual a entrada")
 
+        if placa in self.__registro_mensalistas:
+            custo = 0.0
+
+        elif placa in self.__registro_eventos:
+            custo = self.__valor_evento
+
+        elif (
+            data_hora_saida.day == data_hora_entrada.day + 1
+            and data_hora_entrada.hour >= 21
+            and data_hora_saida.hour < 8
+        ):
+            custo = self.valor_diaria_noturna
+
+        else:
+            custo = self.calcular_custo_estacionamento(duracao_sec)
+
+        # Aplica desconto da seguradora
+        if veiculo["desc_seguradora"]:
+            custo = custo * self.__desconto_seguradora
+
         self.__contador_veiculos -= 1
         self.__registro_entrada_ativo.pop(placa)
         self.__registro_saida[placa] = {
             "entrada": data_hora_entrada,
             "saida": data_hora_saida,
             "duracao": duracao_sec,
+            "custo": custo,
         }
 
         return self.__registro_saida[placa]
+
+    def calcular_custo_estacionamento(self, duracao_sec):
+
+        duracao_min = duracao_sec / 60
+        fracao_15min = round(duracao_min / 15)
+
+        if fracao_15min < 4:
+            return fracao_15min * self.__valor_fracao
+
+        if fracao_15min >= 36:
+            return self.__valor_diaria_diurna
+
+        else:
+            duracao_hora = fracao_15min / 4
+            return duracao_hora * self.valor_hora_cheia
