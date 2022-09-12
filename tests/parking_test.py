@@ -4,7 +4,15 @@ from pms.parking import Estacionamento
 
 @pytest.fixture
 def valid_park():
-    return Estacionamento()
+    return Estacionamento(
+        capacidade_maxima=15,
+        valor_fracao=10.00,
+        valor_diaria_diurna=120.00,
+        valor_evento=70.00,
+        valor_mensalista=600,
+        desconto_hora_cheia=0.75,
+        desconto_diaria_notura=0.45,
+    )
 
 
 def test_capacidade_maxima(valid_park):
@@ -18,7 +26,7 @@ def test_valor_fracao(valid_park):
 
 
 @pytest.mark.entrada_dados
-def test_valor_diaria_diurna(park):
+def test_valor_diaria_diurna(valid_park):
     """Testa inicialização de atributo do metodo contrutor valor diaria diurna"""
     assert valid_park.valor_diaria_diurna == 120.00
 
