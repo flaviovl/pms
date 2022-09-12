@@ -2,15 +2,11 @@ import re
 from datetime import date, datetime, time
 from numbers import Number
 
-from .exceptions import (
-    DataHoraInvalidaException,
-    DescricaoEmBrancoException,
-    EstacionamentoCheioException,
-    EstacionamentoVazioException,
-    ValorAcessoInvalidoException,
-    VeiculoExisteRegistroException,
-    VeiculoNaoRegistrado,
-)
+from .exceptions import (DataHoraInvalidaException, DescricaoEmBrancoException,
+                         EstacionamentoCheioException,
+                         EstacionamentoVazioException,
+                         ValorAcessoInvalidoException,
+                         VeiculoExisteRegistroException, VeiculoNaoRegistrado)
 
 
 class Estacionamento:
@@ -169,6 +165,17 @@ class Estacionamento:
         return (self.__valor_fracao * 4) * self.__desconto_hora_cheia
 
     @property
+    def valor_diaria_noturna(self) -> float:
+        """
+        Metodo responsavel por calcular o valor da diária noturna.
+        Valor da diária notura é um percentual da diaria diurna.
+
+        Returns:
+            float: valor diária noturna
+        """
+        return self.__valor_diaria_diurna * self.__desconto_diaria_notura
+
+    @property
     def get_vagas_livres(self) -> int:
         """
         Metodo responsavel em calcular o numero de vagas livres.
@@ -244,6 +251,7 @@ class Estacionamento:
     def registrar_evento(self, placa: str):
         self.__registro_eventos.append(placa)
 
+    # =================================================================================
     def registrar_entrada_veiculo(
         self,
         placa: str,
@@ -330,6 +338,7 @@ class Estacionamento:
 
         return self.__registro_saida[placa]
 
+    # =================================================================================
     def calcular_custo_estacionamento(self, duracao_sec):
 
         duracao_min = duracao_sec / 60
@@ -344,3 +353,34 @@ class Estacionamento:
         else:
             duracao_hora = fracao_15min / 4
             return duracao_hora * self.valor_hora_cheia
+
+    # =================================================================================
+
+    @property
+    def get_total_apurado_contratante(self) -> float:
+        """
+        Metodo responsavel em calcular valor do contratante.
+
+        Returns:
+            float: valor total do contratante
+        """
+        return self.get_total_apurado * self.__percetual_contratante
+
+    @property
+    def get_total_apurado(self) -> float:
+        """
+        Metodo responsavel em calcular todo o valor de entrada de um
+        estacionamento.
+        Entrada = acessos(rotativo e evento) + veiculos mensalista.
+
+        Returns:
+            float: valor total apurado
+        """
+        mensalistas = len(self.__registro_mensalistas) * self.__valor_mensalista
+        return (
+            sum(registro.get("custo") for _, registro in self.__registro_saida.items())
+            + mensalistas
+        )
+
+
+# =================================================================================

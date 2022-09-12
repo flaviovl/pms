@@ -48,6 +48,38 @@ def test_valor_evento(valid_park):
     assert valid_park.valor_evento == 70.00
 
 
+@pytest.mark.entrada_dados
+def test_desconto_hora_cheia(valid_park):
+    """Testa atributo desconto hora cheia"""
+    assert valid_park.desconto_hora_cheia == 0.75
+
+
+@pytest.mark.entrada_dados
+def test_desconto_diaria_notura(valid_park):
+    """Testa atributo desconto diaria noturna"""
+    assert valid_park.desconto_diaria_notura == 0.45
+
+
+def test_valor_diaria_noturna(valid_park):
+    """
+    Testa calculo do valor da diaria notura = 55%
+    de desconto da diaria diurna.
+    """
+    assert valid_park.valor_diaria_noturna == 54
+
+
+@pytest.mark.estacionamento
+def test_vagas_livres(valid_park):
+    """Testa atributo vagas livres"""
+    assert valid_park.get_vagas_livres == 15
+
+
+@pytest.mark.estacionamento
+def test_get_vagas_ocupadas(valid_park):
+    """Testa o numero de vagas ocupadas"""
+    assert valid_park.get_vagas_ocupadas == 0
+
+
 @pytest.mark.estacionamento
 def test_valor_hora_cheia(valid_park):
     """
@@ -57,35 +89,44 @@ def test_valor_hora_cheia(valid_park):
     assert valid_park.valor_hora_cheia == 30
 
 
+@pytest.mark.estacionamento
+def test_get_esta_cheio(valid_park):
+    """
+    Testa se o numero de veiulos estacionado
+    é menor que a capacidade total
+    """
+    assert valid_park.get_esta_cheio == False
+
+
 # ==============================================================================
 
 
 @pytest.mark.funcional
 @pytest.mark.registro_entrada_saida
-def test_registrar_entrada_um_veiculo(park):
+def test_registrar_entrada_um_veiculo(valid_park):
     placa = "LUV1530"
-    vagas_ocupadas_inicio = park.get_vagas_ocupadas
-    park.registrar_entrada_veiculo(placa, datetime(2022, 9, 3, 12, 0))
-    vagas_ocupadas_fim = park.get_vagas_ocupadas
+    vagas_ocupadas_inicio = valid_park.get_vagas_ocupadas
+    valid_park.registrar_entrada_veiculo(placa, datetime(2022, 9, 3, 12, 0))
+    vagas_ocupadas_fim = valid_park.get_vagas_ocupadas
 
     assert vagas_ocupadas_fim == vagas_ocupadas_inicio + 1
-    assert placa in park.registro_entrada_ativo
+    assert placa in valid_park.registro_entrada_ativo
 
 
 # ==============================================================================
 @pytest.mark.funcional
 @pytest.mark.registro_entrada_saida
-def test_registrar_saida_um_veiculo(park):
+def test_registrar_saida_um_veiculo(valid_park):
     placa = "LUV1530"
-    vagas_ocupadas_inicio = park.get_vagas_ocupadas
+    vagas_ocupadas_inicio = valid_park.get_vagas_ocupadas
 
-    park.registrar_entrada_veiculo(placa, datetime(2022, 9, 3, 12, 0))
-    park.registrar_saida_veiculo(placa, datetime(2022, 9, 3, 18, 0))
-    vagas_ocupadas_fim = park.get_vagas_ocupadas
+    valid_park.registrar_entrada_veiculo(placa, datetime(2022, 9, 3, 12, 0))
+    valid_park.registrar_saida_veiculo(placa, datetime(2022, 9, 3, 18, 0))
+    vagas_ocupadas_fim = valid_park.get_vagas_ocupadas
 
     assert vagas_ocupadas_inicio == vagas_ocupadas_fim
-    assert placa not in park.registro_entrada_ativo
-    assert placa in park.registro_saida
+    assert placa not in valid_park.registro_entrada_ativo
+    assert placa in valid_park.registro_saida
 
 
 # ==============================================================================
@@ -100,17 +141,17 @@ placa = [
 @pytest.mark.funcional
 @pytest.mark.registro_entrada_saida
 @pytest.mark.parametrize("placa", placa)
-def test_registrar_veiculo_mensalista(park, placa):
-    park.registrar_veiculos_mensalista(placa)
-    assert placa in park.registro_mensalista
+def test_registrar_veiculo_mensalista(valid_park, placa):
+    valid_park.registrar_veiculos_mensalista(placa)
+    assert placa in valid_park.registro_mensalista
 
 
 @pytest.mark.funcional
 @pytest.mark.registro_entrada_saida
 @pytest.mark.parametrize("placa", placa)
-def test_registrar_veiculo_evento(park, placa):
-    park.registrar_evento(placa)
-    assert placa in park.registro_evento
+def test_registrar_veiculo_evento(valid_park, placa):
+    valid_park.registrar_evento(placa)
+    assert placa in valid_park.registro_evento
 
 
 # ==============================================================================
@@ -149,12 +190,12 @@ base_teste_fracao = [
         "45 min",
     ],
 )
-def test_calculo_valor_acesso_fracao(park, placa, entrada, saida, resultado):
+def test_calculo_valor_acesso_fracao(valid_park, placa, entrada, saida, resultado):
 
-    park.registrar_entrada_veiculo(placa, entrada)
-    park.registrar_saida_veiculo(placa, saida)
+    valid_park.registrar_entrada_veiculo(placa, entrada)
+    valid_park.registrar_saida_veiculo(placa, saida)
 
-    custo = park.registro_saida.get(placa).get("custo")
+    custo = valid_park.registro_saida.get(placa).get("custo")
     assert custo == resultado
 
 
@@ -192,11 +233,11 @@ base_teste_hora_cheia = [
         "9 Horas",
     ],
 )
-def test_calculo_valor_acesso_hora_cheia(park, placa, entrada, saida, resultado):
-    park.registrar_entrada_veiculo(placa, entrada)
-    park.registrar_saida_veiculo(placa, saida)
+def test_calculo_valor_acesso_hora_cheia(valid_park, placa, entrada, saida, resultado):
+    valid_park.registrar_entrada_veiculo(placa, entrada)
+    valid_park.registrar_saida_veiculo(placa, saida)
 
-    custo = park.registro_saida.get(placa).get("custo")
+    custo = valid_park.registro_saida.get(placa).get("custo")
     assert custo == resultado
 
 
@@ -234,11 +275,13 @@ base_teste_diaria_diurna = [
         "12 Horas",
     ],
 )
-def test_calculo_valor_acesso_diaria_diurna(park, placa, entrada, saida, resultado):
-    park.registrar_entrada_veiculo(placa, entrada)
-    park.registrar_saida_veiculo(placa, saida)
+def test_calculo_valor_acesso_diaria_diurna(
+    valid_park, placa, entrada, saida, resultado
+):
+    valid_park.registrar_entrada_veiculo(placa, entrada)
+    valid_park.registrar_saida_veiculo(placa, saida)
 
-    custo = park.registro_saida.get(placa).get("custo")
+    custo = valid_park.registro_saida.get(placa).get("custo")
     assert custo == resultado
 
 
@@ -279,12 +322,14 @@ base_teste_diaria_noturna = [
         ">23H | <7h",
     ],
 )
-def test_calculo_valor_acesso_diaria_noturna(park, placa, entrada, saida, resultado):
+def test_calculo_valor_acesso_diaria_noturna(
+    valid_park, placa, entrada, saida, resultado
+):
 
-    park.registrar_entrada_veiculo(placa, entrada)
-    park.registrar_saida_veiculo(placa, saida)
+    valid_park.registrar_entrada_veiculo(placa, entrada)
+    valid_park.registrar_saida_veiculo(placa, saida)
 
-    custo = park.registro_saida.get(placa).get("custo")
+    custo = valid_park.registro_saida.get(placa).get("custo")
     assert custo == resultado
 
 
@@ -326,19 +371,19 @@ base_teste_mensalista_evento = [
         "Diaria noturna",
     ],
 )
-def test_calcular_valor_acesso_mensalista(park, placa, entrada, saida):
+def test_calcular_valor_acesso_mensalista(valid_park, placa, entrada, saida):
     """
     Mensalista não gera custo por acesso de nenhum tipo.
     Valor mensal(unico) não fica registrado na tabela de acessos.
     """
     livre = 0
-    park.registrar_veiculos_mensalista(placa)
-    park.registrar_entrada_veiculo(placa, entrada)
-    park.registrar_saida_veiculo(placa, saida)
+    valid_park.registrar_veiculos_mensalista(placa)
+    valid_park.registrar_entrada_veiculo(placa, entrada)
+    valid_park.registrar_saida_veiculo(placa, saida)
 
-    custo = park.registro_saida.get(placa).get("custo")
+    custo = valid_park.registro_saida.get(placa).get("custo")
 
-    assert placa in park.registro_mensalista
+    assert placa in valid_park.registro_mensalista
     assert custo == livre
 
 
@@ -357,16 +402,78 @@ def test_calcular_valor_acesso_mensalista(park, placa, entrada, saida):
         "Diaria noturna",
     ],
 )
-def test_calcular_valor_acesso_evento(park, placa, entrada, saida):
+def test_calcular_valor_acesso_evento(valid_park, placa, entrada, saida):
 
-    park.registrar_evento(placa)
-    park.registrar_entrada_veiculo(placa, entrada)
-    park.registrar_saida_veiculo(placa, saida)
+    valid_park.registrar_evento(placa)
+    valid_park.registrar_entrada_veiculo(placa, entrada)
+    valid_park.registrar_saida_veiculo(placa, saida)
 
-    custo = park.registro_saida.get(placa).get("custo")
+    custo = valid_park.registro_saida.get(placa).get("custo")
 
-    assert placa in park.registro_evento
-    assert custo == park.valor_evento
+    assert placa in valid_park.registro_evento
+    assert custo == valid_park.valor_evento
+
+
+# ==============================================================================
+@pytest.fixture
+def setup_calcular_total():
+
+    park_fga = Estacionamento(15, 10.00, 120.00, 70.00, 600, 0.75, 0.45)
+
+    # Registrar dois veiculos como mensalista
+    park_fga.registrar_veiculos_mensalista("MEN1040")
+    park_fga.registrar_veiculos_mensalista("MEN5422")
+
+    # Registrar dois veiculos em um evento
+    park_fga.registrar_evento("EVE1550")
+    park_fga.registrar_evento("EVE2059")
+
+    # Registrar acessos de mensalistas (custo acesso == 0)
+    park_fga.registrar_entrada_veiculo("MEN1040", datetime(2022, 9, 11, 10, 30))
+    park_fga.registrar_saida_veiculo("MEN1040", datetime(2022, 9, 11, 15, 20))
+    park_fga.registrar_entrada_veiculo("MEN5422", datetime(2022, 9, 11, 11, 40))
+    park_fga.registrar_saida_veiculo("MEN5422", datetime(2022, 9, 11, 18, 20))
+    park_fga.registrar_entrada_veiculo("MEN1040", datetime(2022, 9, 11, 19, 15))
+    park_fga.registrar_saida_veiculo("MEN1040", datetime(2022, 9, 11, 20, 30))
+
+    # Registrar acessos por eventos (custo == valor fixo)
+    park_fga.registrar_entrada_veiculo("EVE1550", datetime(2022, 9, 11, 12, 10))
+    park_fga.registrar_saida_veiculo("EVE1550", datetime(2022, 9, 11, 18, 20))
+    park_fga.registrar_entrada_veiculo("EVE2059", datetime(2022, 9, 11, 10, 30))
+    park_fga.registrar_saida_veiculo("EVE2059", datetime(2022, 9, 11, 22, 20))
+
+    # Registrar acesso por Fração
+    park_fga.registrar_entrada_veiculo("HPR1040", datetime(2022, 9, 11, 10, 15))
+    park_fga.registrar_saida_veiculo("HPR1040", datetime(2022, 9, 11, 10, 30))
+    park_fga.registrar_entrada_veiculo("JEE1240", datetime(2022, 9, 11, 11, 10))
+    park_fga.registrar_saida_veiculo("JEE1240", datetime(2022, 9, 11, 11, 40))
+    park_fga.registrar_entrada_veiculo("LUV1530", datetime(2022, 9, 11, 15, 14))
+    park_fga.registrar_saida_veiculo("LUV1530", datetime(2022, 9, 11, 15, 59))
+
+    # Registrar acesso por Hora
+    park_fga.registrar_entrada_veiculo("JPX1815", datetime(2022, 9, 11, 18, 0))
+    park_fga.registrar_saida_veiculo("JPX1815", datetime(2022, 9, 11, 20, 0))
+
+    # Registrar acesso por Diaria Diurna
+    park_fga.registrar_entrada_veiculo("RPX1A40", datetime(2022, 9, 11, 10, 0))
+    park_fga.registrar_saida_veiculo("RPX1A40", datetime(2022, 9, 11, 22, 0))
+
+    # Registrar acesso por Diaria Noturna
+    park_fga.registrar_entrada_veiculo("VIU1530", datetime(2022, 9, 11, 23, 15))
+    park_fga.registrar_saida_veiculo("VIU1530", datetime(2022, 9, 11, 5, 50))
+
+    return park_fga
+
+
+# ==============================================================================
+@pytest.mark.apurado
+def test_acumulado_valor_apurado(setup_calcular_total):
+    assert setup_calcular_total.get_total_apurado == 1775.0
+
+
+@pytest.mark.apurado
+def test_acumulado_valor_apurado_contratante(setup_calcular_total):
+    assert setup_calcular_total.get_total_apurado_contratante == 887.50
 
 
 # ==============================================================================
