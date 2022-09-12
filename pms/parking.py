@@ -265,6 +265,17 @@ class Estacionamento:
         if self.get_esta_cheio:
             raise EstacionamentoCheioException("Estacionamento com lotação máxima")
 
+        self.dados_resistro_entrada_veiculo_valido(placa, data_hora_entrada)
+
+        self.__contador_veiculos += 1
+        self.__registro_entrada_ativo[placa] = {
+            "dt_entrada": data_hora_entrada,
+            "desc_seguradora": desc_seguradora,
+        }
+
+    # =================================================================================
+
+    def dados_resistro_entrada_veiculo_valido(self, placa, data_hora_entrada):
         if not placa:
             raise DescricaoEmBrancoException("Placa é um campos obrigatorio")
 
@@ -278,12 +289,7 @@ class Estacionamento:
         if not isinstance(data_hora_entrada, datetime):
             raise DataHoraInvalidaException("Formato data/hora inválido")
 
-        self.__contador_veiculos += 1
-        self.__registro_entrada_ativo[placa] = {
-            "dt_entrada": data_hora_entrada,
-            "desc_seguradora": desc_seguradora,
-        }
-
+    # =================================================================================
     def registrar_saida_veiculo(self, placa, data_hora_saida):
 
         if self.__contador_veiculos <= 0:
@@ -334,6 +340,24 @@ class Estacionamento:
         return self.__registro_saida[placa]
 
     # =================================================================================
+
+    def dados_resistro_saida_veiculo_valido(self, placa, data_hora_saida):
+        if not placa:
+            raise DescricaoEmBrancoException("Placa é um campos obrigatorio")
+
+        if not data_hora_saida:
+            raise DescricaoEmBrancoException("Data hora é um campos obrigatorio")
+
+        if not (re.match("[A-Z]{3}[0-9][0-9A-Z][0-9]{2}", placa)):
+            raise ValorAcessoInvalidoException("Placa invalida")
+
+        if not isinstance(data_hora_saida, datetime):
+            raise DataHoraInvalidaException("Formato data/hora inválido")
+
+        if placa not in self.__registro_entrada_ativo:
+            raise VeiculoNaoRegistrado("A entrada do veiculo nao foi registrada")
+
+    # =================================================================================
     def calcular_custo_estacionamento(self, duracao_sec):
 
         duracao_min = duracao_sec / 60
@@ -376,23 +400,6 @@ class Estacionamento:
             sum(registro.get("custo") for _, registro in self.__registro_saida.items())
             + mensalistas
         )
-
-    # =================================================================================
-    def dados_resistro_saida_veiculo_valido(self, placa, data_hora_saida):
-        if not placa:
-            raise DescricaoEmBrancoException("Placa é um campos obrigatorio")
-
-        if not data_hora_saida:
-            raise DescricaoEmBrancoException("Data hora é um campos obrigatorio")
-
-        if not (re.match("[A-Z]{3}[0-9][0-9A-Z][0-9]{2}", placa)):
-            raise ValorAcessoInvalidoException("Placa invalida")
-
-        if not isinstance(data_hora_saida, datetime):
-            raise DataHoraInvalidaException("Formato data/hora inválido")
-
-        if placa not in self.__registro_entrada_ativo:
-            raise VeiculoNaoRegistrado("A entrada do veiculo nao foi registrada")
 
 
 # =================================================================================
