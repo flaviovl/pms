@@ -1,16 +1,47 @@
+fail_fast: false
+
+default_language_version:
+    python: python3.10.5
+
 repos:
--   repo: https://github.com/psf/black
-    rev: 22.6.0
-    hooks:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: "v4.3.0"
+  hooks:
+    - id: check-ast
+    - id: check-yaml
+    - id: check-added-large-files
+    - id: check-symlinks
+    - id: check-docstring-first
+    - id: check-merge-conflict
+    - id: check-case-conflict
+    - id: check-executables-have-shebangs
+    - id: destroyed-symlinks
+    - id: end-of-file-fixer
+    - id: fix-byte-order-marker
+    - id: mixed-line-ending
+    - id: trailing-whitespace
+
+- repo: https://github.com/psf/black
+  rev: 22.6.0
+  hooks:
     - id: black
       language_version: python3.10.5
       stages: [commit]
+
+- repo: local
+  hooks:
+    - id: pylint
+      name: pylint
+      entry: pylint
+      language: python
+      types: [python]
 
 -   repo: https://gitlab.com/pycqa/flake8
     rev: 4.0.1
     hooks:
     - id: flake8
       stages: [commit]
+
 # -   repo: local
 #     hooks:
 #     - id: pytest
@@ -20,4 +51,3 @@ repos:
 #       always_run: true
 #       pass_filenames: false
 #       stages: [commit]
-# -   repo: local
