@@ -41,6 +41,7 @@ class Estacionamento:
         self.__registro_mensalistas: list = []
         self.__horario_abertura: time = time(8, 0)
         self.__fechamento: time = time(23, 59, 59)
+        self.__bilhetes_ativos = {}
 
     #  ===============================================================================
     @classmethod
@@ -276,9 +277,21 @@ class Estacionamento:
     # =================================================================================
 
     def registrar_veiculos_mensalista(self, placa: str):
+        """
+        Metodo responsavel por adicionar um novo veiculo no registro de mensalista
+
+        Args:
+            placa (str): placa do veiculo
+        """
         self.__registro_mensalistas.append(placa)
 
     def registrar_evento(self, placa: str):
+        """
+        Metodo responsavel por adicionar um novo veiculo no registro de um evento
+
+        Args:
+            placa (str): placa do veiculo
+        """
         self.__registro_eventos.append(placa)
 
     # =================================================================================
@@ -291,17 +304,22 @@ class Estacionamento:
         if self.get_esta_cheio:
             raise EstacionamentoCheioException("Estacionamento com lotação máxima")
 
-        self.dados_resistro_entrada_veiculo_valido(placa, data_hora_entrada)
+        self.e_valido_dados_entrada(placa, data_hora_entrada)
+
+        tipo_acesso = self.buscar_tipo_acesso(placa)
 
         self.__contador_veiculos += 1
         self.__registro_entrada_ativo[placa] = {
             "dt_entrada": data_hora_entrada,
             "desc_seguradora": desc_seguradora,
+            "tipo_acesso": tipo_acesso,
         }
 
-    # =================================================================================
+    # ---------------------------------------------------------------------------------
 
-    def dados_resistro_entrada_veiculo_valido(self, placa, data_hora_entrada):
+    def e_valido_dados_entrada(self, placa: str, data_hora_entrada: datetime):
+        """Validar os dados de entrada de um veículo no estacionamento"""
+
         if not placa:
             raise DescricaoEmBrancoException("Placa é um campos obrigatorio")
 
@@ -315,59 +333,41 @@ class Estacionamento:
         if not isinstance(data_hora_entrada, datetime):
             raise DataHoraInvalidaException("Formato data/hora inválido")
 
+    # ---------------------------------------------------------------------------------
+    def buscar_tipo_acesso(self, placa: str) -> str:
+        if placa in self.__registro_mensalistas:
+            return "MENSALISTA"
+        elif placa in self.__registro_eventos:
+            return "EVENTO"
+        else:
+            return "ROTATIVO"
+
     # =================================================================================
-    def registrar_saida_veiculo(self, placa, data_hora_saida):
+    def registrar_saida_veiculo(self, placa: str, data_hora_saida: datetime):
 
         if self.__contador_veiculos <= 0:
             raise EstacionamentoVazioException("Estacionamento vazio")
 
-        self.dados_resistro_saida_veiculo_valido(placa, data_hora_saida)
+        self.e_valido_dados_saida(placa, data_hora_saida)
 
         veiculo = self.__registro_entrada_ativo[placa]
         data_hora_entrada = veiculo["dt_entrada"]
-        duracao_sec = (data_hora_saida - data_hora_entrada).seconds
-
-        if duracao_sec <= 0:
-            raise DataHoraInvalidaException("Data Hora saída menor ou igual a entrada")
-
-        if placa in self.__registro_mensalistas:
-            custo = 0.0
-
-        # def buscar_placa_mensalista(self, placa):
-        #     if placa in self.__registro_mensalistas:
-        #         return True
-
-        elif placa in self.__registro_eventos:
-            custo = self.__valor_evento
-
-        elif (
-            data_hora_saida.day == data_hora_entrada.day + 1
-            and data_hora_entrada.hour >= 21
-            and data_hora_saida.hour < 8
-        ):
-            custo = self.valor_diaria_noturna
-
-        else:
-            custo = self.calcular_custo_estacionamento(duracao_sec)
-
-        # Aplica desconto da seguradora
-        if veiculo["desc_seguradora"]:
-            custo = custo * self.__desconto_seguradora
+        duracao_min = self.calcular_duracao_min(data_hora_entrada, data_hora_saida)
+        custo = self.computar_custo(veiculo, data_hora_saida)
 
         self.__contador_veiculos -= 1
         self.__registro_entrada_ativo.pop(placa)
         self.__registro_saida[placa] = {
             "entrada": data_hora_entrada,
             "saida": data_hora_saida,
-            "duracao": duracao_sec,
+            "duracao": duracao_min,
             "custo": custo,
         }
 
-        return self.__registro_saida[placa]
+    # ------------------------------------------------------------------------------------
 
-    # =================================================================================
-
-    def dados_resistro_saida_veiculo_valido(self, placa, data_hora_saida):
+    def e_valido_dados_saida(self, placa: str, data_hora_saida: datetime):
+        """Validar os dados de entrada de um veículo no estacionamento"""
         if not placa:
             raise DescricaoEmBrancoException("Placa é um campos obrigatorio")
 
@@ -383,21 +383,82 @@ class Estacionamento:
         if placa not in self.__registro_entrada_ativo:
             raise VeiculoNaoRegistrado("A entrada do veiculo nao foi registrada")
 
-    # =================================================================================
-    def calcular_custo_estacionamento(self, duracao_sec):
+    # ------------------------------------------------------------------------------------
+    def calcular_duracao_min(
+        self, data_hora_entrada: datetime, data_hora_saida: datetime
+    ):
+        duracao_sec = (data_hora_saida - data_hora_entrada).seconds
 
-        duracao_min = duracao_sec / 60
+        return duracao_sec / 60
+
+    # ------------------------------------------------------------------------------------
+    def computar_custo(self, veiculo: dict, data_hora_saida: datetime):
+        """
+        Aplicar calculo de custo de acordo com o tipo de acesso
+
+        Args:
+            veiculo (dict): registro do veiculo registradado na entrada
+            data_hora_saida (datetime): data e hora que o veiculo saiu do estacionamento
+
+        Raises:
+            DataHoraInvalidaException: Data Hora saída menor ou igual a entrada
+
+        Returns:
+            float: valor a ser cobrado com ou sem desconto da seguradora
+        """
+        tipo_acesso = veiculo["tipo_acesso"]
+        data_hora_entrada = veiculo["dt_entrada"]
+        duracao_sec = (data_hora_saida - data_hora_entrada).seconds
+
+        if duracao_sec <= 0:
+            raise DataHoraInvalidaException("Data Hora saída menor ou igual a entrada")
+
+        if tipo_acesso == "MENSALISTA":
+            custo = 0.00
+
+        elif tipo_acesso == "EVENTO":
+            custo = self.__valor_evento
+
+        else:
+            custo = self.calcular_custo_rotativo(data_hora_entrada, data_hora_saida)
+
+        # Aplicar desconto da seguradora
+        if veiculo["desc_seguradora"]:
+            custo = custo * self.__desconto_seguradora
+
+        return custo
+
+    # =================================================================================
+    def calcular_custo_rotativo(self, data_hora_entrada, data_hora_saida):
+        """
+        Calcular o custo com base no tempo que o veiculo permaneceu no estacionamento
+        ou regras de horario de entrada e saída.
+
+        Args:
+            data_hora_entrada (datetime): data e hora que o veiculo entrou no estacionamento
+            data_hora_saida (datetime): data e hora que o veiculo saiu do estacionamento
+
+        Returns:
+            float: valor a ser cobrado sem desconto
+        """
+        if (
+            data_hora_saida.day == data_hora_entrada.day + 1
+            and data_hora_entrada.hour >= 21
+            and data_hora_saida.hour < 8
+        ):
+            return self.valor_diaria_noturna
+
+        duracao_min = self.calcular_duracao_min(data_hora_entrada, data_hora_saida)
         fracao_15min = round(duracao_min / 15)
 
         if fracao_15min < 4:
-            return fracao_15min * self.__valor_fracao
+            return fracao_15min * self.__valor_fracao  # type: ignore
 
         if fracao_15min >= 36:
             return self.__valor_diaria_diurna
 
-        else:
-            duracao_hora = fracao_15min / 4
-            return duracao_hora * self.valor_hora_cheia
+        duracao_hora = fracao_15min / 4
+        return duracao_hora * self.valor_hora_cheia
 
     # =================================================================================
 
