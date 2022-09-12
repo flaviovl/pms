@@ -16,3 +16,7 @@ class Estacionamento:
         self.desconto_diaria_notura = desconto_diaria_notura
         self.valor_mensalista = valor_mensalista
         self.valor_evento = valor_evento
+
+    @property
+    def valor_hora_cheia(self) -> float:
+        return 30
