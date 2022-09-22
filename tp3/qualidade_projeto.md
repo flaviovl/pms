@@ -18,24 +18,23 @@ A vantagem da simplicidade é ainda maior quando a pessoa que mantém o software
 <br />
 
 **Simplicidade e Elegância são base do Zen do Python, escrito por Tim Peters em 1999.**
-
 "Simples é melhor que complexo"
-
 "Bonito é melhor que feio"
-
 "Legibilidade conta"
-
 "Complexo é melhor que complicado"
-
 "Se a implementação é difícil de explicar, é uma má ideia."
 
-“Qualquer tolo pode escrever um código que um computador consiga entender. Bons programadores escrevem código que humanos consigam entender.” – Martin Fowler
+
+>“Qualquer tolo pode escrever um código que um computador consiga entender. Bons programadores escrevem código que humanos consigam entender.” – Martin Fowler
+
+<br />
 <br />
 
-> ### 📌 **Modularidade (baixo acoplamento e alta coesão):**
+  > ### 📌 **Modularidade (baixo acoplamento e alta coesão):**
 
 
 A modularização é o processo de dividir as funcionalidades de um sistema de software em vários módulos independentes, onde cada módulo contenha tudo o que é necessário para executar a funcionalidade.
+
 <br />
 
 **Algumas vantagens da Modularização são:**
@@ -44,9 +43,8 @@ A modularização é o processo de dividir as funcionalidades de um sistema de s
 • Fácil de entender e manter o sistema;
 • A manutenção do sistema é fácil estender funcionalidades;
 • Um módulo pode ser usado várias vezes(reuso de código);
-• Acoplamento: é a medida do grau de interdependência entre os módulos. Um bom software terá baixa acoplamento.
 
-
+**Acoplamento: é a medida do grau de interdependência entre os módulos. Um bom software terá baixa acoplamento.**
 Na prática, o acoplamento é uma das causas de complexidade em software. Quanto maior ele for, mais complexo o sistema se torna, pois componentes que são dependentes entre si, normalmente, não podem ser compreendidos, modificados ou corrigidos sem considerar suas dependências.
 <br />
 
@@ -59,10 +57,10 @@ Um módulo com baixa coesão faz muitas coisas não relacionadas e leva aos segu
 • Difícil de manter;
 • "Delicado": sendo constantemente afetada por outras mudanças
 <br />
+<br />
 
 > ### 📌 **Extensibilidade:**
 Extensibilidade é a capacidade do software de ser estendido ou melhorado em suas funcionalidades. É uma das chaves da orientação a objetos quando um novo comportamento ou funcionalidade precisa ser adicionado, espera-se que o software seja flexível o suficiente para serem estendidas e não alteradas, dessa forma o código original permanece intacto e confiável. Neste escopo está intimamente relacionada com a manutenibilidade e boa qualidade da base de código.
-
 
 Um software manutenível deve ser fácil adicionar código ao sistema existente, deve ser fácil atualizar para novos recursos. É um código que pode ser entendido até por alguém novo com um mínimo de esforço. 
 
@@ -72,10 +70,10 @@ Entre os fatores decisivos para o sucesso de um produto de software a extensibil
 
 A manutenibilidade pode ser medida com algumas métricas: numero de linhas de código, medidas de McCab, métricas de complexidade de Halstead, complexidade ciclamática, profundidade de herança dentre outros.
 <br />
+<br />
 
 > ### 📌 **Portabilidade:**
 A portabilidade pode ser definida como: “A facilidade com que um sistema ou componente pode ser transferido de um hardware, ou software ambiente para outro”.
-
 
 
 A portabilidade do software é um atributo desejável para a qualidade do software. Essa característica é composta das seguintes sub características:
@@ -85,7 +83,6 @@ Adaptabilidade- Grau em que um produto ou sistema pode ser adaptado de forma ef
 Instabilidade - Grau de eficácia e eficiência com que um produto ou sistema pode ser instalado e/ou desinstalado com sucesso em um ambiente especificado.
 
 Substituibilidade - Grau em que um produto pode substituir outro produto de software especificado para a mesma finalidade no mesmo ambiente.
-
 
 
 A Implementação do projeto foi realizada em Python e permite extensões escritas em C e C++ (Cpyton). É um projeto open source portátil que e suportado pelos principais tipos de plataforma, como o Windows, Linux e MacOs, todos de forma nativa. E ainda permite implementações em Jython (interpretador Python em Java). Gera bytecodes compatíveis com a JVM.
