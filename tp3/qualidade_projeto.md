@@ -18,11 +18,11 @@ A vantagem da simplicidade é ainda maior quando a pessoa que mantém o software
 <br />
 
 **Simplicidade e Elegância são base do Zen do Python, escrito por Tim Peters em 1999.**
-"Simples é melhor que complexo"
-"Bonito é melhor que feio"
-"Legibilidade conta"
-"Complexo é melhor que complicado"
-"Se a implementação é difícil de explicar, é uma má ideia."
+"Simples é melhor que complexo";
+"Bonito é melhor que feio";
+"Legibilidade conta";
+"Complexo é melhor que complicado";
+"Se a implementação é difícil de explicar, é uma má ideia."...
 
 
 >“Qualquer tolo pode escrever um código que um computador consiga entender. Bons programadores escrevem código que humanos consigam entender.” – Martin Fowler
