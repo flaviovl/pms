@@ -17,13 +17,13 @@ Simplicidade é também um dos princípios por trás da prática de Extreme Prog
 A vantagem da simplicidade é ainda maior quando a pessoa que mantém o software não é aquela que uma vez o escreveu. Os programas simples são mais fáceis de manter porque o mantenedor necessita de menos tempo para compreendê-los, portanto a probabilidade de ter defeitos a longo prazo é bem menor.
 <br />
 
-**Simplicidade e Elegância são base do Zen do Python, escrito por Tim Peters em 1999.**
+**Simplicidade e Elegância são base do Zen do Python, escrito por Tim Peters em 1999.**  
 "Simples é melhor que complexo";  
 "Bonito é melhor que feio";  
 "Legibilidade conta";  
 "Complexo é melhor que complicado";  
 "Se a implementação é difícil de explicar, é uma má ideia."...  
-
+  
 
 >“Qualquer tolo pode escrever um código que um computador consiga entender. Bons programadores escrevem código que humanos consigam entender.” – Martin Fowler
 
@@ -37,7 +37,7 @@ A modularização é o processo de dividir as funcionalidades de um sistema de s
 
 <br />
 
-**Algumas vantagens da Modularização são:**
+**Algumas vantagens da Modularização são:**  
 • Aumenta a Coesão;  
 • Reduz o acoplamento;  
 • Fácil de entender e manter o sistema;  
@@ -51,7 +51,7 @@ Na prática, o acoplamento é uma das causas de complexidade em software. Quanto
 
 **Coesão: é uma medida do grau em que os elementos do módulo são funcionalmente relacionados. Um bom projeto de software terá alta coesão.**
 
-Um módulo com baixa coesão faz muitas coisas não relacionadas e leva aos seguintes problemas:
+Um módulo com baixa coesão faz muitas coisas não relacionadas e leva aos seguintes problemas:  
 • Difícil de entender;  
 • Difícil de reusar;  
 • Difícil de manter;  
