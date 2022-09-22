@@ -18,11 +18,11 @@ A vantagem da simplicidade é ainda maior quando a pessoa que mantém o software
 <br />
 
 **Simplicidade e Elegância são base do Zen do Python, escrito por Tim Peters em 1999.**
-"Simples é melhor que complexo";
-"Bonito é melhor que feio";
-"Legibilidade conta";
-"Complexo é melhor que complicado";
-"Se a implementação é difícil de explicar, é uma má ideia."...
+"Simples é melhor que complexo";  
+"Bonito é melhor que feio";  
+"Legibilidade conta";  
+"Complexo é melhor que complicado";  
+"Se a implementação é difícil de explicar, é uma má ideia."...  
 
 
 >“Qualquer tolo pode escrever um código que um computador consiga entender. Bons programadores escrevem código que humanos consigam entender.” – Martin Fowler
@@ -38,11 +38,11 @@ A modularização é o processo de dividir as funcionalidades de um sistema de s
 <br />
 
 **Algumas vantagens da Modularização são:**
-• Aumenta a Coesão;
-• Reduz o acoplamento;
-• Fácil de entender e manter o sistema;
-• A manutenção do sistema é fácil estender funcionalidades;
-• Um módulo pode ser usado várias vezes(reuso de código);
+• Aumenta a Coesão;  
+• Reduz o acoplamento;  
+• Fácil de entender e manter o sistema;  
+• A manutenção do sistema é fácil estender funcionalidades;  
+• Um módulo pode ser usado várias vezes(reuso de código);  
 
 **Acoplamento: é a medida do grau de interdependência entre os módulos. Um bom software terá baixa acoplamento.**
 Na prática, o acoplamento é uma das causas de complexidade em software. Quanto maior ele for, mais complexo o sistema se torna, pois componentes que são dependentes entre si, normalmente, não podem ser compreendidos, modificados ou corrigidos sem considerar suas dependências.
@@ -52,9 +52,9 @@ Na prática, o acoplamento é uma das causas de complexidade em software. Quanto
 **Coesão: é uma medida do grau em que os elementos do módulo são funcionalmente relacionados. Um bom projeto de software terá alta coesão.**
 
 Um módulo com baixa coesão faz muitas coisas não relacionadas e leva aos seguintes problemas:
-• Difícil de entender;
-• Difícil de reusar;
-• Difícil de manter;
+• Difícil de entender;  
+• Difícil de reusar;  
+• Difícil de manter;  
 • "Delicado": sendo constantemente afetada por outras mudanças
 <br />
 <br />
