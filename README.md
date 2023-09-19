@@ -7,16 +7,10 @@
 ---
 <br />
 
-> ### 📌 **Visão Geral - Trabalho Prático TDD - TTPE**
+> ### 📌 **Visão Geral**
 O PMS é ums sistema simples e completo de **gerenciamento de estacionamentos particulares e instalações públicas**.
 
 O principal objetivo é informatizar o controle de liberação das catracas eletrônicas e o gerenciamento de diversas formas de acesso aos estacionamentos.
-<br />
-
-|Nome|Matrícula|
-|---|---|
-|Flavio Vieira Leão | 15/0125682|
-
 <br />
 
 ### 📋 **Principais Funcionalidades**
